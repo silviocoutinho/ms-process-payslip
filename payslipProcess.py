@@ -45,10 +45,19 @@ def processPayslip(file, month, year):
     # Create Array with result from dataFrame
     employeeRegistration = df.to_numpy()
 
+    #Create Folder to Store files for the month
+    mode = 0o777
+    os.mkdir(month, mode)
+
+    #Create Dictionary to Store information about payslips
+    paysplipInformation = {}
+
+
+
     for index, value in enumerate(employeeRegistration):
         value = value + month + year + SECRET_TO_HASH        
         hashName = hashlib.md5(value.encode())
-        pdfSplitter(file, hashName.hexdigest(), index) 
+        pdfSplitter(file, hashName.hexdigest(), index, month) 
 
 
 def getPayslipFromFTP(file):
@@ -68,7 +77,7 @@ def main():
         jsonObject = json.loads(body)
         print(jsonObject["fileName"])
 
-        urlFile = jsonObject["urlServer"] + jsonObject["storeFilePath"]  + "/" + jsonObject["fileName"]
+        urlFile = "http://" + jsonObject["urlServer"] + "/" + jsonObject["storeFilePath"]  + "/" + jsonObject["fileName"]
         month = jsonObject["month"] 
         year  = jsonObject["year"]
         getPayslipFromFTP(urlFile)
