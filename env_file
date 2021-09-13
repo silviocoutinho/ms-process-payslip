@@ -1,0 +1,15 @@
+FTP_HOST = ''
+FTP_USER = ''
+FTP_PASS = ''
+FTP_PORT = 21
+QUEUE_NAME = ''
+RABBITMQ_SERVER = ''
+RABBITMQ_PORT = 5672
+URL_FILE_SERVER = 'http://ip/'
+URL_PATH_FILES_STORED = ''
+SECRET_TO_HASH = 'Put secret here!'
+USERDB = ''
+DB = ''
+PASSDB = ''
+DB_SERVER = ''
+DB_PORT = ''
