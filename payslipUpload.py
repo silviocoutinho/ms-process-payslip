@@ -35,7 +35,7 @@ def upload(handler, name, path):
     try:        
         handler.cwd(path)
         with open(name, "rb") as file:        
-            handler.storbinary(f"STOR {filename}", file)
+            handler.storbinary(f"STOR {name}", file)
     except Exception:        
         print('Erro ao subir o arquivo ao servidor')
         return None
@@ -43,10 +43,10 @@ def upload(handler, name, path):
 
 ############################################################
 
-ftp = connectClient(FTP_USER, FTP_PASS, FTP_HOST, FTP_PORT)
+#ftp = connectClient(FTP_USER, FTP_PASS, FTP_HOST, FTP_PORT)
 
-filename = "Folhatemp.pdf"
-upload(ftp, filename, "holerites/2021")
+#filename = "Folhatemp.pdf"
+#upload(ftp, filename, "holerites/2021")
 
-disconnectClient(ftp)
+#disconnectClient(ftp)
 
