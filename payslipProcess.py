@@ -86,7 +86,7 @@ def main():
         print(jsonObject["fileName"])
 
         # "http://" +
-        urlFile =  jsonObject["urlServer"] + "/" + jsonObject["storeFilePath"]  + "/" + jsonObject["fileName"]
+        urlFile =  "http://" + jsonObject["urlServer"] + "/" + jsonObject["storeFilePath"]  + "/" + jsonObject["fileName"]
         month = jsonObject["month"] 
         year  = jsonObject["year"]
         getPayslipFromFTP(urlFile)
@@ -96,16 +96,16 @@ def main():
         #Create conection with FTP Server
         ftp = connectClient(FTP_USER, FTP_PASS, FTP_HOST, FTP_PORT) 
        
-        os.chdir(month)
+        #os.chdir(month)
         
         print("Current working directory: {0}".format(os.getcwd()))
-        
+        pathSource = month
         for payslip in objectJSONPayslip:            
-            fileToUpload =  os.path.join(month,  objectJSONPayslip[payslip]["fileName"] )           
-            print(fileToUpload)
-            upload(ftp, fileToUpload, "holerites/2021")
-           
-     
+            fileToUpload =  objectJSONPayslip[payslip]["fileName"]                
+            
+            upload(ftp, fileToUpload, "holerites/2021", pathSource)
+        
+            
       
         #Close conection with FTP Server
         disconnectClient(ftp)
