@@ -1,5 +1,5 @@
 from splitPdf import pdfSplitter, convertPdfToCsv, interateSeries, removeHyphen
-from payslipUpload import connectClient, disconnectClient, upload
+from payslipUpload import ftpThread
 from utils import createFolder, removeFolder
 
 import pika, sys, os, json
@@ -22,10 +22,6 @@ URL_FILE_SERVER = os.getenv("URL_FILE_SERVER")
 URL_PATH_FILES_STORED = os.getenv("URL_PATH_FILES_STORED")
 SECRET_TO_HASH = os.getenv("SECRET_TO_HASH")
 
-FTP_HOST = os.getenv("FTP_HOST")
-FTP_USER = os.getenv("FTP_USER")
-FTP_PASS = os.getenv("FTP_PASS")
-FTP_PORT = os.getenv("FTP_PORT")
 
 
 def processPayslip(file, month, year):
@@ -86,29 +82,36 @@ def main():
         print(jsonObject["fileName"])
 
         # "http://" +
-        urlFile =  "http://" + jsonObject["urlServer"] + "/" + jsonObject["storeFilePath"]  + "/" + jsonObject["fileName"]
+        urlFile =  jsonObject["urlServer"] + "/" + jsonObject["storeFilePath"]  + "/" + jsonObject["fileName"]
         month = jsonObject["month"] 
         year  = jsonObject["year"]
         getPayslipFromFTP(urlFile)
         objectJSONPayslip = processPayslip('Folhatemp.pdf', month, year)
-
-
-        #Create conection with FTP Server
-        ftp = connectClient(FTP_USER, FTP_PASS, FTP_HOST, FTP_PORT) 
        
-        #os.chdir(month)
+        i = 1   
+        threads = []
         
         print("Current working directory: {0}".format(os.getcwd()))
         pathSource = month
-        for payslip in objectJSONPayslip:            
-            fileToUpload =  objectJSONPayslip[payslip]["fileName"]                
-            
-            upload(ftp, fileToUpload, "holerites/2021", pathSource)
+        pathDestination = "holerites" + "/" + year
+        for payslip in objectJSONPayslip:  
+            fileName = objectJSONPayslip[payslip]["fileName"]          
+            sourceFile      =  pathSource       + "/" + fileName
+            destinationFile =  pathDestination  + "/" + fileName
+            fileName
+            if os.path.isfile(sourceFile):
+                thread = ftpThread(i , sourceFile, i,  destinationFile )   
+                thread.start()
+                threads.append( thread )        
+                i += 1  
         
-            
-      
-        #Close conection with FTP Server
-        disconnectClient(ftp)
+        for t in threads:
+            t.join()
+        
+        print(' [*] Files sended to Server!!!')
+        #Remove Temp Folder
+        removeFolder(pathSource)
+        print(' [*] Waiting for messages. To exit press CTRL+C')
 
        
         
