@@ -1,5 +1,7 @@
+from Payslip import Payslip
 from splitPdf import pdfSplitter, convertPdfToCsv, interateSeries, removeHyphen
 from payslipUpload import ftpThread
+from payslipDB import storePayslipThread
 from utils import createFolder, removeFolder
 
 import pika, sys, os, json
@@ -57,7 +59,7 @@ def processPayslip(file, month, year):
     for index, value in enumerate(employeeRegistration):        
         valueToEncode = value + month + year + SECRET_TO_HASH        
         hashName = hashlib.md5(valueToEncode.encode())
-        objectJSONPayslip[value] = {"fileName": hashName.hexdigest()+".pdf", "month": month, "year":year, "registrationWorker":value}
+        objectJSONPayslip[value] = {"fileName": hashName.hexdigest()+".pdf", "month": month, "year":year, "employeeRegistration":value}
         pdfSplitter(file, hashName.hexdigest(), index, month)
 
     return objectJSONPayslip      
@@ -84,7 +86,7 @@ def main():
         # "http://" +
         urlFile =  jsonObject["urlServer"] + "/" + jsonObject["storeFilePath"]  + "/" + jsonObject["fileName"]
         month = jsonObject["month"] 
-        year  = jsonObject["year"]
+        year  = jsonObject["year"]        
         getPayslipFromFTP(urlFile)
         objectJSONPayslip = processPayslip('Folhatemp.pdf', month, year)
        
@@ -95,15 +97,20 @@ def main():
         pathSource = month
         pathDestination = "holerites" + "/" + year
         for payslip in objectJSONPayslip:  
-            fileName = objectJSONPayslip[payslip]["fileName"]          
+            fileName                = objectJSONPayslip[payslip]["fileName"]
+            employeeRegistration    = objectJSONPayslip[payslip]["employeeRegistration"]      
             sourceFile      =  pathSource       + "/" + fileName
             destinationFile =  pathDestination  + "/" + fileName
-            fileName
+            newPayslip = Payslip(employeeRegistration, month, year, 1, fileName)
             if os.path.isfile(sourceFile):
                 thread = ftpThread(i , sourceFile, i,  destinationFile )   
                 thread.start()
                 threads.append( thread )        
-                i += 1  
+                i += 1
+                thread2 = storePayslipThread(i , newPayslip )   
+                thread2.start()
+                threads.append( thread2 )        
+                i += 1    
         
         for t in threads:
             t.join()
