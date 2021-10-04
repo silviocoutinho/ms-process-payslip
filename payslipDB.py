@@ -36,14 +36,14 @@ class storePayslipThread (threading.Thread):
                 exit()
                        
         def run(self):
-            print("self.paysplip: ===>>>>>", self.payslip)
+            #print("self.paysplip: ===>>>>>", self.payslip)
             insertNewPayslip(self.conn, self.cur, self.payslip)
 
 #=========Grava um novo registro=========
 def insertNewPayslip(conn, cur, payslip):
-  
-    sqlString = """INSERT INTO holerites(employee_registration, month, year, type, "fileNamePayslip") VALUES (%s,%s,%s,%s,%s)"""
-    dataToStore = (payslip.employee_registration, payslip.month, payslip.year, payslip.typePayslip, payslip.fileNamePayslip)
+    print(payslip.description)
+    sqlString = """INSERT INTO holerites(employee_registration, month, year, description, type, "fileNamePayslip") VALUES (%s,%s,%s,%s,%s,%s)"""
+    dataToStore = (payslip.employee_registration, payslip.month, payslip.year, payslip.description, payslip.typePayslip, payslip.fileNamePayslip)
 
     try:
         cur.execute(sqlString, dataToStore)

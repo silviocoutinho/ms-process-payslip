@@ -86,7 +86,8 @@ def main():
         # "http://" +
         urlFile =  jsonObject["urlServer"] + "/" + jsonObject["storeFilePath"]  + "/" + jsonObject["fileName"]
         month = jsonObject["month"] 
-        year  = jsonObject["year"]        
+        year  = jsonObject["year"] 
+        description = jsonObject["description"]       
         getPayslipFromFTP(urlFile)
         objectJSONPayslip = processPayslip('Folhatemp.pdf', month, year)
        
@@ -101,7 +102,7 @@ def main():
             employeeRegistration    = objectJSONPayslip[payslip]["employeeRegistration"]      
             sourceFile      =  pathSource       + "/" + fileName
             destinationFile =  pathDestination  + "/" + fileName
-            newPayslip = Payslip(employeeRegistration, month, year, 1, fileName)
+            newPayslip = Payslip(employeeRegistration, month, year, description, 1, fileName)
             if os.path.isfile(sourceFile):
                 thread = ftpThread(i , sourceFile, i,  destinationFile )   
                 thread.start()
