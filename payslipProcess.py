@@ -81,12 +81,12 @@ def main():
     def callback(ch, method, properties, body):
         print(" [x] Received %r" % body)        
         jsonObject = json.loads(body)
-        print(jsonObject["fileName"])
-
-        # "http://" +
-        urlFile =  jsonObject["urlServer"] + "/" + jsonObject["storeFilePath"]  + "/" + jsonObject["fileName"]
+        
         month = jsonObject["month"] 
         year  = jsonObject["year"] 
+
+        urlFile =  URL_FILE_SERVER  + URL_PATH_FILES_STORED  + "/" + year + "/" + jsonObject["fileName"]
+        
         description = jsonObject["description"]       
         getPayslipFromFTP(urlFile)
         objectJSONPayslip = processPayslip('Folhatemp.pdf', month, year)
