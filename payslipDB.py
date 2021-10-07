@@ -15,7 +15,8 @@ USERDB = os.getenv("USERDB")
 DB = os.getenv("DB")
 PASSDB = os.getenv("PASSDB")
 DB_SERVER = os.getenv("DB_SERVER")
-DB_PORT = os.getenv("DB_PORT ")
+DB_PORT = os.getenv("DB_PORT")
+
 
 #Create Thread that will use to store data in database
 class storePayslipThread (threading.Thread):
