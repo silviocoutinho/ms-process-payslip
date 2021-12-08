@@ -26,7 +26,7 @@ SECRET_TO_HASH = os.getenv("SECRET_TO_HASH")
 
 
 
-def processPayslip(file, month, year):
+def processPayslip(file, month, year, typePayslip):
     # Main Function
     convertPdfToCsv(file, "csv")
 
@@ -57,7 +57,7 @@ def processPayslip(file, month, year):
     objectJSONPayslip = {}
 
     for index, value in enumerate(employeeRegistration):        
-        valueToEncode = value + month + year + SECRET_TO_HASH        
+        valueToEncode = value + month + year + typePayslip + SECRET_TO_HASH        
         hashName = hashlib.md5(valueToEncode.encode())
         objectJSONPayslip[value] = {"fileName": hashName.hexdigest()+".pdf", "month": month, "year":year, "employeeRegistration":value}
         pdfSplitter(file, hashName.hexdigest(), index, month)
@@ -84,12 +84,13 @@ def main():
         
         month = jsonObject["month"] 
         year  = jsonObject["year"] 
-
+        typePayslip = jsonObject["typePayslip"]  # Tipo de Heolerite, mensal, férias, etc
+        
         urlFile =  URL_FILE_SERVER  + URL_PATH_FILES_STORED  + "/" + year + "/" + jsonObject["fileName"]
         
         description = jsonObject["description"]       
         getPayslipFromFTP(urlFile)
-        objectJSONPayslip = processPayslip('Folhatemp.pdf', month, year)
+        objectJSONPayslip = processPayslip('Folhatemp.pdf', month, year, typePayslip)
        
         i = 1   
         threads = []
@@ -102,7 +103,8 @@ def main():
             employeeRegistration    = objectJSONPayslip[payslip]["employeeRegistration"]      
             sourceFile      =  pathSource       + "/" + fileName
             destinationFile =  pathDestination  + "/" + fileName
-            newPayslip = Payslip(employeeRegistration, month, year, description, 1, fileName)
+            
+            newPayslip = Payslip(employeeRegistration, month, year, description, typePayslip, fileName)
             if os.path.isfile(sourceFile):
                 thread = ftpThread(i , sourceFile, i,  destinationFile )   
                 thread.start()
