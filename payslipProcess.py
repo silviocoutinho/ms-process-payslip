@@ -87,6 +87,8 @@ def main():
         typePayslip = jsonObject["typePayslip"]  # Tipo de Heolerite, mensal, férias, etc
         
         urlFile =  URL_FILE_SERVER  + URL_PATH_FILES_STORED  + "/" + year + "/" + jsonObject["fileName"]
+
+        print(urlFile)
         
         description = jsonObject["description"]       
         getPayslipFromFTP(urlFile)

@@ -1,6 +1,7 @@
 .env
 env2
 .env_remote
+.env_local
 
 __pycache__
 
