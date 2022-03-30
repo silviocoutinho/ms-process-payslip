@@ -20,6 +20,8 @@ load_dotenv()
 queueName = os.getenv("QUEUE_NAME")
 RABBITMQ_SERVER = os.getenv("RABBITMQ_SERVER")
 RABBITMQ_PORT = os.getenv("RABBITMQ_PORT")
+RABBITMQ_USER = os.getenv("RABBITMQ_USER")
+RABBITMQ_PASS = os.getenv("RABBITMQ_PASS")
 URL_FILE_SERVER = os.getenv("URL_FILE_SERVER")
 URL_PATH_FILES_STORED = os.getenv("URL_PATH_FILES_STORED")
 SECRET_TO_HASH = os.getenv("SECRET_TO_HASH")
@@ -73,7 +75,8 @@ def getPayslipFromFTP(file):
 
 
 def main():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(RABBITMQ_SERVER, RABBITMQ_PORT))
+    credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
+    connection = pika.BlockingConnection(pika.ConnectionParameters(RABBITMQ_SERVER, RABBITMQ_PORT, '/', credentials))
     channel = connection.channel()
 
     channel.queue_declare(queue=queueName)
