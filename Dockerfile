@@ -7,6 +7,8 @@ RUN pip install tabula-py && pip install pandas
 RUN pip install numpy && pip install pika 
 RUN pip install requests && pip install psycopg2
 RUN pip install python-dotenv
+RUN pip install --upgrade pandas
+
 
 # Install OpenJDK-11
 RUN apt-get update && \
@@ -27,6 +29,7 @@ RUN export JAVA_HOME
 RUN adduser  myuser
 RUN mkdir -p /home/myuser/app
 RUN chown myuser /home/myuser/app
+RUN chmod 755  /home/myuser/app
 USER myuser
 WORKDIR /home/myuser/app
 COPY . /home/myuser/app

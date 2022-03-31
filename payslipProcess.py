@@ -33,7 +33,7 @@ def processPayslip(file, month, year, typePayslip):
     convertPdfToCsv(file, "csv")
 
     # Open CSV with pandas and create dataframe df
-    df = pd.read_csv('Folha.csv', sep="\n", names=["A"])
+    df = pd.read_csv('Folha.csv', sep="\t", names=["A"])
 
     # Searching a specific part in csv and overwriting the dataFrame
     # This procedure will remove all data except personal data of employees
