@@ -2,7 +2,7 @@ from Payslip import Payslip
 from splitPdf import pdfSplitter, convertPdfToCsv, interateSeries, removeHyphen
 from payslipUpload import ftpThread
 from payslipDB import storePayslipThread
-from utils import createFolder, removeFolder
+from utils import createFolder, removeFolder, removeFile
 
 import pika, sys, os, json
 
@@ -92,6 +92,9 @@ def main():
         urlFile =  URL_FILE_SERVER  + URL_PATH_FILES_STORED  + "/" + year + "/" + jsonObject["fileName"]
 
         print(urlFile)
+
+        removeFile('Folhatemp.pdf')
+        removeFile('Folha.csv')
         
         description = jsonObject["description"]       
         getPayslipFromFTP(urlFile)
